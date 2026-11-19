@@ -1,38 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>开张：用 Hexo + GitHub Actions 搭一个不用服务器的博客</title>
-    <url>/2026/11/19/hello-hexo/</url>
-    <content><![CDATA[<p>欢迎来到这个新开的小站。第一篇文章，就把「这个博客是怎么来的」写清楚，省得以后自己都忘了。</p>
-<span id="more"></span>
-
-<h2 id="为什么是-Hexo"><a href="#为什么是-Hexo" class="headerlink" title="为什么是 Hexo"></a>为什么是 Hexo</h2><p>想写点东西的时候，最怕的是被工具链拦住。Hexo 的好处很朴素：写 Markdown，跑一条命令，得到一个纯静态的网站。<br>没有数据库，没有后台，没有需要打补丁的服务器——只要有一个能放静态文件的地方，它就能活。</p>
-<h2 id="整条链路"><a href="#整条链路" class="headerlink" title="整条链路"></a>整条链路</h2><ol>
-<li><strong>本地写文章</strong>：<code>npx hexo new &quot;标题&quot;</code>，然后在 <code>source/_posts</code> 里改 Markdown。</li>
-<li><strong>推送源码</strong>：<code>git push</code> 到源码仓库（下称仓库 1）。</li>
-<li><strong>CI 生成 + 部署</strong>：GitHub Actions 检出仓库 1，<code>npm ci &amp;&amp; hexo generate</code>，再把 <code>public/</code> 整包推送到 Pages 仓库（下称仓库 2，<code>用户名.github.io</code>）。</li>
-<li><strong>访问</strong>：<code>https://用户名.github.io</code>。</li>
-</ol>
-<p>关键在于第 3 步用了一对 SSH 密钥：私钥放在仓库 1 的 Secrets 里，公钥作为仓库 2 的 Deploy Key（勾选允许写入）。<br>这样 Action 就有权限往仓库 2 写文件，而你的账号密码从头到尾没有出现在任何地方。</p>
-<h2 id="日常怎么写"><a href="#日常怎么写" class="headerlink" title="日常怎么写"></a>日常怎么写</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">npx hexo new <span class="string">&quot;今天的想法&quot;</span></span><br><span class="line">npx hexo server        <span class="comment"># 本地预览 http://localhost:4000</span></span><br><span class="line">git add . &amp;&amp; git commit -m <span class="string">&quot;post: 今天的想法&quot;</span></span><br><span class="line">git push               <span class="comment"># 剩下的交给 CI</span></span><br></pre></td></tr></table></figure>
-
-<p><code>hexo server</code> 带热重载，改完存盘刷新页面就行。</p>
-<h2 id="一点提醒"><a href="#一点提醒" class="headerlink" title="一点提醒"></a>一点提醒</h2><ul>
-<li><strong><code>url</code> 一定要写对</strong>：<code>_config.yml</code> 里的 <code>url</code> 必须和最终访问地址一致，否则站内链接、RSS、sitemap 全都会歪。子路径部署时还要额外设 <code>root</code>。</li>
-<li><strong>别把 <code>public/</code> 提交进仓库</strong>：它是生成产物，交给 CI。源码仓库只存 <code>source/</code>、<code>_config*.yml</code>、<code>package.json</code>。</li>
-<li><strong>文章用「未来时间」会被隐藏</strong>：<code>future: true</code> 时不会，但如果你改成了 <code>false</code>，记得把日期写对。</li>
-</ul>
-<p>下一篇聊聊 Front-matter 和一些写作时的小技巧。</p>
-]]></content>
-      <categories>
-        <category>折腾记录</category>
-      </categories>
-      <tags>
-        <tag>Hexo</tag>
-        <tag>GitHub Pages</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>GitHub Actions 自动部署拆解：Deploy Key 与 Secrets 到底在干什么</title>
     <url>/2026/11/18/actions-deploy/</url>
     <content><![CDATA[<p>第一次配这套东西的时候，我照着教程抄了命令，但不知道为什么要两把钥匙。后来弄明白了，其实是个很朴素的授权问题。</p>
@@ -123,6 +91,38 @@
       <tags>
         <tag>Hexo</tag>
         <tag>Markdown</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>开张：用 Hexo + GitHub Actions 搭一个不用服务器的博客</title>
+    <url>/2026/11/19/hello-hexo/</url>
+    <content><![CDATA[<p>欢迎来到这个新开的小站。第一篇文章，就把「这个博客是怎么来的」写清楚，省得以后自己都忘了。</p>
+<span id="more"></span>
+
+<h2 id="为什么是-Hexo"><a href="#为什么是-Hexo" class="headerlink" title="为什么是 Hexo"></a>为什么是 Hexo</h2><p>想写点东西的时候，最怕的是被工具链拦住。Hexo 的好处很朴素：写 Markdown，跑一条命令，得到一个纯静态的网站。<br>没有数据库，没有后台，没有需要打补丁的服务器——只要有一个能放静态文件的地方，它就能活。</p>
+<h2 id="整条链路"><a href="#整条链路" class="headerlink" title="整条链路"></a>整条链路</h2><ol>
+<li><strong>本地写文章</strong>：<code>npx hexo new &quot;标题&quot;</code>，然后在 <code>source/_posts</code> 里改 Markdown。</li>
+<li><strong>推送源码</strong>：<code>git push</code> 到源码仓库（下称仓库 1）。</li>
+<li><strong>CI 生成 + 部署</strong>：GitHub Actions 检出仓库 1，<code>npm ci &amp;&amp; hexo generate</code>，再把 <code>public/</code> 整包推送到 Pages 仓库（下称仓库 2，<code>用户名.github.io</code>）。</li>
+<li><strong>访问</strong>：<code>https://用户名.github.io</code>。</li>
+</ol>
+<p>关键在于第 3 步用了一对 SSH 密钥：私钥放在仓库 1 的 Secrets 里，公钥作为仓库 2 的 Deploy Key（勾选允许写入）。<br>这样 Action 就有权限往仓库 2 写文件，而你的账号密码从头到尾没有出现在任何地方。</p>
+<h2 id="日常怎么写"><a href="#日常怎么写" class="headerlink" title="日常怎么写"></a>日常怎么写</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">npx hexo new <span class="string">&quot;今天的想法&quot;</span></span><br><span class="line">npx hexo server        <span class="comment"># 本地预览 http://localhost:4000</span></span><br><span class="line">git add . &amp;&amp; git commit -m <span class="string">&quot;post: 今天的想法&quot;</span></span><br><span class="line">git push               <span class="comment"># 剩下的交给 CI</span></span><br></pre></td></tr></table></figure>
+
+<p><code>hexo server</code> 带热重载，改完存盘刷新页面就行。</p>
+<h2 id="一点提醒"><a href="#一点提醒" class="headerlink" title="一点提醒"></a>一点提醒</h2><ul>
+<li><strong><code>url</code> 一定要写对</strong>：<code>_config.yml</code> 里的 <code>url</code> 必须和最终访问地址一致，否则站内链接、RSS、sitemap 全都会歪。子路径部署时还要额外设 <code>root</code>。</li>
+<li><strong>别把 <code>public/</code> 提交进仓库</strong>：它是生成产物，交给 CI。源码仓库只存 <code>source/</code>、<code>_config*.yml</code>、<code>package.json</code>。</li>
+<li><strong>文章用「未来时间」会被隐藏</strong>：<code>future: true</code> 时不会，但如果你改成了 <code>false</code>，记得把日期写对。</li>
+</ul>
+<p>下一篇聊聊 Front-matter 和一些写作时的小技巧。</p>
+]]></content>
+      <categories>
+        <category>折腾记录</category>
+      </categories>
+      <tags>
+        <tag>Hexo</tag>
+        <tag>GitHub Pages</tag>
       </tags>
   </entry>
 </search>
